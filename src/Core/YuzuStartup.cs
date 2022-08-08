@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using YuzuDelivery.Core;
 using YuzuDelivery.Core.ViewModelBuilder;
@@ -10,7 +9,6 @@ using YuzuDelivery.Umbraco.Import;
 using Umbraco.Extensions;
 using Umbraco.Cms.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Models.PublishedContent;
 #else
@@ -108,8 +106,6 @@ namespace YuzuDelivery.Umbraco.Core
                 var config = factory.GetService<IYuzuConfiguration>();
                 var mapper = factory.GetService<IMapper>();
 
-                var viewmodelAssemblies = config.ViewModelAssemblies;
-
                 var baseItemType = typeof(DefaultPublishedElement<,>);
                 var items = new List<IDefaultPublishedElement>();
 
@@ -157,9 +153,9 @@ namespace YuzuDelivery.Umbraco.Core
             composition.Register(typeof(IViewmodelPostProcessor), typeof(FileRefViewmodelPostProcessor));
 
             //MUST be transient lifetime
-            composition.Register(typeof(IUpdateableConfig), typeof(CoreUmbracoConfig), Lifetime.Transient);
-            composition.Register(typeof(IUpdateableVmBuilderConfig), typeof(CoreVmBuilderConfig), Lifetime.Transient);
-            composition.Register(typeof(IUpdateableImportConfiguration), typeof(CoreImportConfig), Lifetime.Transient);
+            composition.Register(typeof(IUpdateableConfig), typeof(CoreUmbracoConfig));
+            composition.Register(typeof(IUpdateableVmBuilderConfig), typeof(CoreVmBuilderConfig));
+            composition.Register(typeof(IUpdateableImportConfiguration), typeof(CoreImportConfig));
 
             composition.Register<DefaultUmbracoMappingFactory>();
             composition.RegisterAuto<AutoMapper.Profile>();
@@ -211,7 +207,6 @@ namespace YuzuDelivery.Umbraco.Core
                 var config = factory.GetInstance<IYuzuConfiguration>();
                 var mapper = factory.GetInstance<IMapper>();
 
-                var viewmodelAssemblies = config.ViewModelAssemblies;
 
                 var baseItemType = typeof(DefaultPublishedElement<,>);
                 var items = new List<IDefaultPublishedElement>();
@@ -256,7 +251,6 @@ namespace YuzuDelivery.Umbraco.Core
     public class CoreUmbracoConfig : UpdateableConfig
     {
         public CoreUmbracoConfig()
-            : base()
         {
             MappingAssemblies.Add(typeof(YuzuStartup).Assembly);
         }
@@ -265,7 +259,6 @@ namespace YuzuDelivery.Umbraco.Core
     public class CoreVmBuilderConfig : UpdateableVmBuilderConfig
     {
         public CoreVmBuilderConfig()
-            : base()
         {
             ExcludeViewmodelsAtGeneration.Add<vmBlock_DataImage>();
             ExcludeViewmodelsAtGeneration.Add<vmBlock_DataLink>();
@@ -277,7 +270,6 @@ namespace YuzuDelivery.Umbraco.Core
     public class CoreImportConfig : UpdateableImportConfiguration
     {
         public CoreImportConfig(IVmPropertyFinder vmPropertyFinder)
-            : base()
         {
             IgnoreViewmodels.Add<vmBlock_DataImage>();
             IgnoreViewmodels.Add<vmBlock_DataLink>();

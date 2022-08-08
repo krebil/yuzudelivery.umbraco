@@ -2,12 +2,11 @@
 using YuzuDelivery.Core;
 
 #if NETCOREAPP
-using Umbraco.Cms.Core.Logging;
 using Umbraco.Cms.Core.PropertyEditors;
 #else
-using Umbraco.Core.Logging;
 using Umbraco.Web.PropertyEditors;
 #endif
+
 
 namespace YuzuDelivery.Umbraco.Import
 {
@@ -19,7 +18,7 @@ namespace YuzuDelivery.Umbraco.Import
         public const string SectionCustomView = "~/App_Plugins/YuzuBlockList/GridContentSection.html";
         public const string ConfigCustomView = "~/App_Plugins/YuzuBlockList/GridContentColumnsSettings.html";
 
-        public BlockListGridCreationService(BlockListGridRowConfigToContent gridRowConfigToContent, BlockListDataTypeFactory blockListDataTypeFactory, IYuzuDeliveryImportConfiguration importConfig)
+        public BlockListGridCreationService(BlockListGridRowConfigToContent gridRowConfigToContent, BlockListDataTypeFactory blockListDataTypeFactory)
         {
             this.gridRowConfigToContent = gridRowConfigToContent;
             this.blockListDataTypeFactory = blockListDataTypeFactory;
@@ -45,7 +44,7 @@ namespace YuzuDelivery.Umbraco.Import
         {
             if (data.Config.Grid.ColumnConfigOfType != null)
             {
-                var subBlocks = new string[] { data.Config.Grid.ColumnConfigOfType };
+                var subBlocks = new[] { data.Config.Grid.ColumnConfigOfType };
                 var name = $"{GetDataTypeName(data)} Column Settings";
 
                 var options = new BlockListDataTypeFactory.Options();
@@ -55,8 +54,8 @@ namespace YuzuDelivery.Umbraco.Import
 
                 return blockListDataTypeFactory.CreateOrUpdate(name, subBlocks, options);
             }
-            else
-                return null;
+
+            return null;
         }
 
         private IDataType CreatOrUpdateContentEditor(VmToContentPropertyMap data)
@@ -92,17 +91,17 @@ namespace YuzuDelivery.Umbraco.Import
             var sectionProperties = gridRowConfigToContent.GetProperties(gridconfigs);
             var sectionNames = sectionProperties.Select(x => x.Type).Distinct().ToArray();
 
-            options.CreateContentTypeAction = (string name, IContentTypeService contentTypeService) =>
+            options.CreateContentTypeAction = (name, contentTypeService) =>
             {
                 return contentTypeService.Create(name, name.AsAlias(), true);
             };
 
-            options.GetContentTypeAction = (string name, IContentTypeService contentTypeService) =>
+            options.GetContentTypeAction = (name, contentTypeService) =>
             {
                 return contentTypeService.GetByAlias(name.AsAlias());
             };
 
-            options.CreatePropertiesAction = (IContentType contentType, IDocumentTypePropertyService documentTypePropertyService) =>
+            options.CreatePropertiesAction = (contentType, documentTypePropertyService) =>
             {
                 var properties = sectionProperties.Where(x => x.Type == contentType.Name);
                 foreach (var p in properties)

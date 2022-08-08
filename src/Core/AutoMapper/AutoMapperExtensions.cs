@@ -7,11 +7,6 @@ using System.Reflection;
 using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Import;
 
-#if NETCOREAPP
-using Umbraco.Cms.Core;
-#else
-using Umbraco.Core;
-#endif
 
 namespace YuzuDelivery.Umbraco.Core
 {
@@ -20,7 +15,6 @@ namespace YuzuDelivery.Umbraco.Core
         public static void AddProfilesForAttributes(this MapperConfigurationExpression cfg, IEnumerable<Assembly> assembliesToScan, AddedMapContext mapContext, IFactory factory)
         {
             var allTypes = assembliesToScan.Where(a => !a.IsDynamic && a != typeof(NamedProfile).Assembly).SelectMany(a => a.DefinedTypes).ToArray();
-            var autoMapAttributeProfile = new NamedProfile(nameof(YuzuMapAttribute));
             var config = factory.GetInstance<IYuzuConfiguration>();
             var importConfig = factory.GetInstance<IYuzuDeliveryImportConfiguration>();
 
@@ -28,7 +22,7 @@ namespace YuzuDelivery.Umbraco.Core
             {
                 foreach (var attribute in viewModels.GetCustomAttributes<YuzuMapAttribute>())
                 {
-                    var cmsModel = config.CMSModels.Where(x => x.Name == attribute.SourceTypeName).FirstOrDefault();
+                    var cmsModel = config.CMSModels.FirstOrDefault(x => x.Name == attribute.SourceTypeName);
                     if(cmsModel != null && !mapContext.Has(cmsModel, viewModels) && !importConfig.IgnoreUmbracoModelsForAutomap.Contains(cmsModel.Name))
                     {
                         cfg.CreateMap(cmsModel, viewModels);
@@ -59,6 +53,7 @@ namespace YuzuDelivery.Umbraco.Core
                 foreach (var item in mappingConfig.ManualMaps)
                 {
                     var mapper = factory.GetInstance(item.Mapper) as IYuzuBaseMapper;
+                    if (mapper == null) continue;
                     var generic = mapper.MakeGenericMethod(item);
                     mapContext = generic.Invoke(mapper, new object[] { cfg, item, factory, mapContext, config }) as AddedMapContext;
                 }

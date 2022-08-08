@@ -1,11 +1,9 @@
-﻿using System.IO;
-#if NETCOREAPP
-using Microsoft.Extensions.Hosting;
+﻿#if NETCOREAPP
 using Microsoft.Extensions.Options;
 #else
-using System.Web;
 using System.Configuration;
 #endif
+
 namespace YuzuDelivery.Umbraco.Core
 {
 #if NETCOREAPP

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Umbraco.Core.Models.PublishedContent;
-using Umbraco.Web;
 
 namespace YuzuDelivery.Umbraco.PositionalContent
 {

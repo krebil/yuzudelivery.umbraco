@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using YuzuDelivery.Core.ViewModelBuilder;
 using IO = System.IO;
-using YuzuDelivery.Core;
 using System.Reflection;
 
 #if NETCOREAPP
 using Umbraco.Cms.Web.Common.Attributes;
 using Umbraco.Cms.Web.BackOffice.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Http;
+
 #else
 using Umbraco.Web.WebApi;
 using Umbraco.Web.Mvc;
@@ -28,16 +25,14 @@ namespace YuzuDelivery.Umbraco.Core
         private readonly BuildViewModelsService buildViewModelsSvc;
         private readonly ReferencesService referencesService;
         private readonly IYuzuViewmodelsBuilderConfig builderConfig;
-        private readonly IMapper mapper;
 
-        public GenerateController(ReferencesService referencesService, BuildViewModelsService buildViewModelsSvc, IYuzuViewmodelsBuilderConfig builderConfig, IMapper mapper)
+        public GenerateController(ReferencesService referencesService, BuildViewModelsService buildViewModelsSvc, IYuzuViewmodelsBuilderConfig builderConfig)
         {
             this.referencesService = referencesService;
             this.buildViewModelsSvc = buildViewModelsSvc;
             this.builderConfig = builderConfig;
 
             //must be resolved here so that all profiles are created before viewmodel generation
-            this.mapper = mapper;
         }
 
         [HttpGet]

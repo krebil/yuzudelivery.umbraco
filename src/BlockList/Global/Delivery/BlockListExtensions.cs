@@ -1,5 +1,4 @@
-﻿using YuzuDelivery.Core;
-using YuzuDelivery.Umbraco.BlockList;
+﻿using YuzuDelivery.Umbraco.BlockList;
 using System;
 
 #if NETCOREAPP
@@ -8,21 +7,20 @@ using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Core.Models.Blocks;
 #endif
 
+
 namespace YuzuDelivery.Umbraco.Core
 {
     public static class BlockListExtensions
     {
 
-        public static object MapSingleItem(this UmbracoMappingContext context, Type[] types, BlockListModel model, BlockListDataService _blockList)
+        public static object MapSingleItem(this UmbracoMappingContext context, Type[] types, BlockListModel model, BlockListDataService blockList)
         {
             foreach (var t in types)
             {
-                if (_blockList.IsItem(t, model))
-                {
-                    var item = _blockList.CreateItem(model, context);
-                    item.GetType().GetProperty("_ref").SetValue(item, $"par{t.Name}");
-                    return item;
-                }
+                if (!blockList.IsItem(t, model)) continue;
+                var item = blockList.CreateItem(model, context);
+                item.GetType().GetProperty("_ref")?.SetValue(item, $"par{t.Name}");
+                return item;
             }
 
             return null;

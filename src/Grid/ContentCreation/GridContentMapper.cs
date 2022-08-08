@@ -9,7 +9,6 @@ using YuzuDelivery.Umbraco.Import;
 
 #if NETCOREAPP
 #else
-using Umbraco.Core;
 #endif
 
 namespace YuzuDelivery.Umbraco.Grid

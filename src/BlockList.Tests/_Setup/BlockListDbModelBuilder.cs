@@ -7,6 +7,7 @@ using Autofac;
 using Rhino.Mocks;
 using System.Linq.Expressions;
 
+
 namespace YuzuDelivery.Umbraco.BlockList.Tests.Inline
 {
     public partial class BlockListGridContentMapperTests
@@ -81,7 +82,7 @@ namespace YuzuDelivery.Umbraco.BlockList.Tests.Inline
 
             public BlockListDbModelBuilder AddContentProperty(string name, object value)
             {
-                if(value.GetType() == typeof(System.String))
+                if(value is string)
                     CurrentContentData.Add(new JProperty(name, value));
                 else
                     CurrentContentData.Add(new JProperty(name, JObject.FromObject(value)));
@@ -96,7 +97,7 @@ namespace YuzuDelivery.Umbraco.BlockList.Tests.Inline
 
             public BlockListDbModelBuilder AddSettingsProperty(string name, object value)
             {
-                if (value.GetType() == typeof(System.String))
+                if (value is string)
                     CurrentSettingsData.Add(new JProperty(name, value));
                 else
                     CurrentSettingsData.Add(new JProperty(name, JObject.FromObject(value)));

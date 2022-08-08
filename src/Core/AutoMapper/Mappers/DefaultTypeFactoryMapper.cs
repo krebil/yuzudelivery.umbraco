@@ -1,62 +1,44 @@
-﻿using AutoMapper;
-using AutoMapper.Configuration;
+﻿using AutoMapper.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
-using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Core;
+
 
 namespace YuzuDelivery.Umbraco.Core
 {
     public class DefaultTypeFactoryMapper : IYuzuTypeFactoryMapper
     {
-        private readonly IYuzuConfiguration config;
-
-        public DefaultTypeFactoryMapper(IYuzuConfiguration config)
-        {
-            this.config = config;
-        }
-
         public MethodInfo MakeGenericMethod(YuzuMapperSettings baseSettings)
         {
-            var settings = baseSettings as YuzuTypeFactoryMapperSettings;
-
-            if (settings != null)
+            if (baseSettings is YuzuTypeFactoryMapperSettings settings)
             {
-                var genericArguments = settings.Factory.GetInterfaces().FirstOrDefault().GetGenericArguments().ToList();
-                genericArguments.Add(settings.Factory);
+                var genericArguments =
+                    settings.Factory.GetInterfaces().FirstOrDefault()?.GetGenericArguments().ToList();
+                genericArguments?.Add(settings.Factory);
 
                 var method = GetType().GetMethod("CreateMap");
-                return method.MakeGenericMethod(genericArguments.ToArray());
+                if (genericArguments != null && method != null)
+                    return method.MakeGenericMethod(genericArguments.ToArray());
             }
-            else
-                throw new Exception("Mapping settings not of type YuzuTypeFactoryMapperSettings");
+            throw new Exception("Mapping settings not of type YuzuTypeFactoryMapperSettings");
         }
 
-        public AddedMapContext CreateMap<Dest, TService>(MapperConfigurationExpression cfg, YuzuMapperSettings baseSettings, IFactory factory, AddedMapContext mapContext, IYuzuConfiguration config)
+        public AddedMapContext CreateMap<Dest, TService>(MapperConfigurationExpression cfg,
+            YuzuMapperSettings baseSettings, IFactory factory, AddedMapContext mapContext, IYuzuConfiguration config)
             where TService : class, IYuzuTypeFactory<Dest>
         {
-            var settings = baseSettings as YuzuTypeFactoryMapperSettings;
-
-            if (settings != null)
+            if (baseSettings is YuzuTypeFactoryMapperSettings settings)
             {
-                Func<IYuzuTypeFactory> getFactory = () =>
-                {
-                    return factory.GetInstance(typeof(TService)) as TService;
-                };
+                IYuzuTypeFactory GetFactory() => factory.GetInstance(typeof(TService)) as TService;
 
-                if(!config.ViewmodelFactories.ContainsKey(settings.Dest))
-                    config.ViewmodelFactories.Add(settings.Dest, getFactory);
+                if (!config.ViewmodelFactories.ContainsKey(settings.Dest))
+                    config.ViewmodelFactories.Add(settings.Dest, GetFactory);
                 config.AddActiveManualMap<TService, Dest>();
 
                 return mapContext;
             }
-            else
-                throw new Exception("Mapping settings not of type YuzuTypeFactoryMapperSettings");
+            throw new Exception("Mapping settings not of type YuzuTypeFactoryMapperSettings");
         }
     }
-
 }

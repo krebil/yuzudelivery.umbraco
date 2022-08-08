@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Core.PropertyEditors;
 using Umbraco.Web.PropertyEditors;
 using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Umbraco.Import.Tests.Integration;
+
 
 namespace YuzuDelivery.Umbraco.BlockList.Tests
 {

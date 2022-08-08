@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Core;
 using YuzuDelivery.Umbraco.Import;
 
@@ -9,19 +7,18 @@ using YuzuDelivery.Umbraco.Import;
 using Umbraco.Extensions;
 using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Web;
 #else
 using Umbraco.Core.Models.Blocks;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 #endif
 
+
 namespace YuzuDelivery.Umbraco.BlockList
 {
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class BlockListGridDataService : IBlockListGridDataService
     {
-        private readonly IMapper mapper;
-        private readonly IYuzuConfiguration config;
         private readonly string[] sectionAliases;
 
         private readonly IEnumerable<IGridItem> gridItems;
@@ -30,25 +27,19 @@ namespace YuzuDelivery.Umbraco.BlockList
         private readonly IPublishedValueFallback publishedValueFallback;
 #endif
 
-        private IEnumerable<Type> viewmodelTypes;
-
-        public BlockListGridDataService(IMapper mapper, IYuzuConfiguration config, IYuzuDeliveryImportConfiguration importConfig, IEnumerable<IGridItem> gridItems, IEnumerable<IGridItemInternal> gridItemsInternal
+        public BlockListGridDataService(IYuzuDeliveryImportConfiguration importConfig, IEnumerable<IGridItem> gridItems, IEnumerable<IGridItemInternal> gridItemsInternal
 #if NETCOREAPP
             , IPublishedValueFallback publishedValueFallback
 #endif
             )
         {
-            this.mapper = mapper;
-            this.config = config;
-            this.sectionAliases = importConfig.GridRowConfigs.Select(x => x.Name.FirstCharacterToLower()).ToArray();
+            sectionAliases = importConfig.GridRowConfigs.Select(x => x.Name.FirstCharacterToLower()).ToArray();
 
             this.gridItems = gridItems;
             this.gridItemsInternal = gridItemsInternal;
 #if NETCOREAPP
             this.publishedValueFallback = publishedValueFallback;
 #endif
-
-            this.viewmodelTypes = config.ViewModels.Where(x => x.Name.StartsWith(YuzuConstants.Configuration.BlockPrefix) || x.Name.StartsWith(YuzuConstants.Configuration.SubPrefix));
         }
 
         public vmBlock_DataRows CreateRows(BlockListModel grid, UmbracoMappingContext context)
@@ -73,15 +64,15 @@ namespace YuzuDelivery.Umbraco.BlockList
                                 .Where(x => x != null).ToList()
                         };
 
-                        context.Items[_BlockList_Constants.ContextRow] = row;
+                        context.Items[BlockListConstants.ContextRow] = row;
 
                         return row;
 
                     }).ToList() : new List<vmSub_DataRowsRow>()
                 };
             }
-            else
-                return null;
+
+            return null;
         }
 
         public vmBlock_DataGrid CreateRowsColumns(BlockListModel grid, UmbracoMappingContext context)
@@ -93,10 +84,10 @@ namespace YuzuDelivery.Umbraco.BlockList
                     Rows = grid.Any() ? grid.Where(x => sectionAliases.Contains(x.Content.ContentType.Alias)).Select(rowBlockList =>
                     {
                         var row = new vmSub_DataGridRow();
-                        context.Items[_BlockList_Constants.ContextRow] = row;
+                        context.Items[BlockListConstants.ContextRow] = row;
 
                         var rowContent = rowBlockList.Content;
-                        var columns = rowContent.Properties.Where(y => !y.Alias.EndsWith("Settings"));
+                        var columns = rowContent.Properties.Where(y => !y.Alias.EndsWith("Settings")).ToList();
 
                         row.Config = GetRowSettingsVm(rowBlockList, context);
 
@@ -104,16 +95,16 @@ namespace YuzuDelivery.Umbraco.BlockList
                         {
                             var column = new vmSub_DataGridColumn()
                             {
-                                GridSize = 12 / columns.Count(),
+                                GridSize = 12 / columns.Count,
                             };
 
-                            context.Items[_BlockList_Constants.ContextColumn] = column;
+                            context.Items[BlockListConstants.ContextColumn] = column;
 #if NETCOREAPP
                             var columnContent = columnProperty.Value<BlockListModel>(publishedValueFallback);
 #else
                             var columnContent = columnProperty.Value<BlockListModel>();
 #endif
-                            var columnSettingsVm = GetColumnSettingsVm(rowContent, columnProperty, context);
+                            GetColumnSettingsVm(rowContent, columnProperty, context);
 
                             column.Config = GetColumnSettingsVm(rowContent, columnProperty, context);
                             column.Items = columnContent?
@@ -135,38 +126,38 @@ namespace YuzuDelivery.Umbraco.BlockList
 
         private object GetRowSettingsVm(BlockListItem rowBlockList, UmbracoMappingContext context)
         {
-            context.Items.Remove(_BlockList_Constants.RowSettings);
+            context.Items.Remove(BlockListConstants.RowSettings);
 
             var rowConfig = rowBlockList.Settings;
 
             var vm = CreateVm(rowConfig, context.Items);
             if (vm != null)
-                context.Items[_BlockList_Constants.RowSettings] = vm;
+                context.Items[BlockListConstants.RowSettings] = vm;
 
             return vm;
         }
 
         private object GetColumnSettingsVm(IPublishedElement rowContent, IPublishedProperty columnProperty, UmbracoMappingContext context)
         {
-            context.Items.Remove(_BlockList_Constants.ColumnSettings);
+            context.Items.Remove(BlockListConstants.ColumnSettings);
 
             var columnConfig = rowContent.Value<BlockListModel>(columnProperty.Alias + "Settings")
            .Select(x => x.Content).FirstOrDefault();
 
             var vm = CreateVm(columnConfig, context.Items);
             if (vm != null)
-                context.Items[_BlockList_Constants.ColumnSettings] = vm;
+                context.Items[BlockListConstants.ColumnSettings] = vm;
 
             return vm;
         }
 
         public object GetContentSettingsVm(GridItemData data)
         {
-            data.ContextItems.Remove(_BlockList_Constants.ContentSettings);
+            data.ContextItems.Remove(BlockListConstants.ContentSettings);
 
             var vm = CreateVm(data.Config, data.ContextItems);
             if (vm != null)
-                data.ContextItems[_BlockList_Constants.ContentSettings] = vm;
+                data.ContextItems[BlockListConstants.ContentSettings] = vm;
             return vm;
         }
 

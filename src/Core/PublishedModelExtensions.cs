@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
 
 #if NETCOREAPP
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Web.Common.DependencyInjection;
+
 #else
 using Umbraco.Core.Models.PublishedContent;
 #endif

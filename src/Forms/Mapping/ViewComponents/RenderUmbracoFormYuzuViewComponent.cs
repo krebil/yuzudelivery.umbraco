@@ -1,6 +1,5 @@
 ﻿#if NETCOREAPP
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Forms.Web.Services;
@@ -27,7 +26,7 @@ namespace YuzuDelivery.Umbraco.Forms
             FormViewModel formModelAsync = await FormRenderingService.GetFormModelAsync(HttpContext, formId, recordId, null);
           
             if (formModelAsync.FormId == Guid.Empty)
-            return (IViewComponentResult) null;
+                return (IViewComponentResult) null;
 
             if (TempData != null && TempData["UmbracoFormSubmitted"] != null)
             {

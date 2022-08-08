@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Umbraco.Web.PropertyEditors;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using Autofac;
 using YuzuDelivery.Umbraco.Forms;
-using Rhino.Mocks;
 using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Umbraco.Import.Tests.Integration;
 
@@ -58,7 +55,7 @@ namespace Yuzu.Delivery.Forms.Tests.Integration.ChangeItem
             umb.DataType.AddParameterEditor("UmbracoForms.FormPicker");
 
             umb.DataType.AddAndStubCreate(1, "Form Picker", "UmbracoForms.FormPicker")
-                .PropertyType.ForCreating<vmBlock_Test>(x => x.Form, 1, 1);
+                .PropertyType.ForCreating<vmBlock_Test>(x => x.Form);
 
             svc.ChangeProperty(map);
 
@@ -71,7 +68,7 @@ namespace Yuzu.Delivery.Forms.Tests.Integration.ChangeItem
         {
 
             umb.DataType.AddAndStubGet(1, "Form Picker")
-                .PropertyType.ForCreating<vmBlock_Test>(x => x.Form, 1, 1);
+                .PropertyType.ForCreating<vmBlock_Test>(x => x.Form);
 
             svc.ChangeProperty(map);
 

@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using YuzuDelivery.Core;
-using YuzuDelivery.ViewModels;
 using YuzuDelivery.Umbraco.Core;
 using Our.Umbraco.DocTypeGridEditor.Helpers;
 using System.Reflection;
@@ -12,19 +11,16 @@ using System.Reflection;
 using Umbraco.Cms.Web.Common.Attributes;
 using Umbraco.Cms.Web.BackOffice.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Http;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Models;
 #else
-using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.Web.WebApi;
 using Umbraco.Web.Mvc;
 using System.Web.Http;
 #endif
+
 
 namespace YuzuDelivery.Umbraco.BlockList
 {
@@ -68,19 +64,19 @@ namespace YuzuDelivery.Umbraco.BlockList
                 var contentType = contentTypeService.Get(Guid.Parse(data.ContentTypeKey));
 
 #if NETCOREAPP
-                var model = docTypeGridEditorHelper.ConvertValueToContent(Guid.NewGuid().ToString(), contentType.Alias, data.Content);
+                var model = docTypeGridEditorHelper.ConvertValueToContent(Guid.NewGuid().ToString(), contentType?.Alias, data.Content);
 #else
                 var model = DocTypeGridEditorHelper.ConvertValueToContent(Guid.NewGuid().ToString(), contentType.Alias, data.Content);
 #endif
 
-                var link = GetCmsToVmLink(contentType);
+                var (cmsType, vmType) = GetCmsToVmLink(contentType);
 
                 var suspectBlockTypeName = $"{YuzuConstants.Configuration.BlockPrefix}{model.ContentType.Alias.FirstCharacterToUpper()}";
 
-                if(link.vmType == null)
-                    link.vmType = config.ViewModels.Where(x => x.Name == suspectBlockTypeName).FirstOrDefault();
+                if(vmType == null)
+                    vmType = config.ViewModels.FirstOrDefault(x => x.Name == suspectBlockTypeName);
 
-                if (link.vmType == null)
+                if (vmType == null)
                 {
                     output.Error = $"Viewmodel for block type {suspectBlockTypeName} not found. Previews of sublocks not supported";
                 }
@@ -88,8 +84,8 @@ namespace YuzuDelivery.Umbraco.BlockList
                 {
                     output.Preview = yuzuDefinitionTemplates.Render(new RenderSettings()
                     {
-                        Data = () => { return mapper.Map(model, link.cmsType, link.vmType, new Dictionary<string, object>() { { "Model", model }, { _BlockList_Constants.IsInPreview, true } }); },
-                        Template = yuzuDefinitionTemplates.GetSuspectTemplateNameFromVm(link.vmType)
+                        Data = () => mapper.Map(model, cmsType, vmType, new Dictionary<string, object>() { { "Model", model }, { BlockListConstants.IsInPreview, true } }),
+                        Template = yuzuDefinitionTemplates.GetSuspectTemplateNameFromVm(vmType)
                     });
                 }
             }
@@ -104,15 +100,15 @@ namespace YuzuDelivery.Umbraco.BlockList
 
         public (Type cmsType, Type vmType) GetCmsToVmLink(IContentType contentType)
         {
-            var cmsType = config.CMSModels.Where(x => contentType.Alias.FirstCharacterToUpper() == x.Name).FirstOrDefault();
-            var cmsTypeInterfaces = cmsType.GetInterfaces();
+            var cmsType = config.CMSModels.FirstOrDefault(x => contentType.Alias.FirstCharacterToUpper() == x.Name);
+            var cmsTypeInterfaces = cmsType?.GetInterfaces();
 
             foreach (var vmType in config.ViewModels)
             {
                 foreach (var attribute in vmType.GetCustomAttributes<YuzuMapAttribute>())
                 {
-                    if (attribute.SourceTypeName == cmsType.Name) return (cmsType, vmType);
-                    var cmsTypeInterface = cmsTypeInterfaces.Where(x => x.Name == attribute.SourceTypeName).FirstOrDefault();
+                    if (attribute.SourceTypeName == cmsType?.Name) return (cmsType, vmType);
+                    var cmsTypeInterface = cmsTypeInterfaces?.FirstOrDefault(x => x.Name == attribute.SourceTypeName);
                     if (cmsTypeInterface != null) return (cmsTypeInterface, vmType);
                 }
             }
@@ -130,6 +126,7 @@ namespace YuzuDelivery.Umbraco.BlockList
         public string Error { get; set; }
     }
 
+    // ReSharper disable once InconsistentNaming
     public class PreviewDTO
     {
         [JsonProperty("content")]

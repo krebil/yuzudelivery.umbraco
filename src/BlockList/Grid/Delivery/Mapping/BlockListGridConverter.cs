@@ -6,6 +6,7 @@ using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Core.Models.Blocks;
 #endif
 
+
 namespace YuzuDelivery.Umbraco.BlockList
 {
     public class BlockListGridConverter : IYuzuTypeConvertor<BlockListModel, vmBlock_DataGrid>

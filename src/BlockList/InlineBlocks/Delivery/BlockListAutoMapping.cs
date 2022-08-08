@@ -1,19 +1,16 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Core;
-using YuzuDelivery.UmbracoModels;
-using YuzuDelivery.ViewModels;
 using YuzuDelivery.Umbraco.Import;
 
 #if NETCOREAPP
 using Umbraco.Cms.Core.Models.Blocks;
-using Umbraco.Cms.Core.Models.PublishedContent;
+
 #else
 using Umbraco.Core.Models.Blocks;
-using Umbraco.Core.Models.PublishedContent;
 #endif
+
 
 namespace YuzuDelivery.Umbraco.BlockList
 {
@@ -23,25 +20,13 @@ namespace YuzuDelivery.Umbraco.BlockList
         {
             var mappings = vmPropertyMappingsFinder.GetBlockMappings(typeof(BlockListModel));
 
-            foreach (var i in mappings)
+            foreach (var convertorType in from i in mappings where i.SourceType != null select i.DestProperty.PropertyType into destPropertyType let generics = destPropertyType.GetGenericArguments() let convertorType = (Type)null select generics.Any() ? typeof(BlockListToListOfTypesConvertor<>).MakeGenericType(generics.FirstOrDefault()) : typeof(BlockListToTypeConvertor<>).MakeGenericType(destPropertyType))
             {
-                if (i.SourceType != null)
+                ManualMaps.Add(new YuzuTypeConvertorMapperSettings()
                 {
-                    var destPropertyType = i.DestProperty.PropertyType;
-                    var generics = destPropertyType.GetGenericArguments();
-
-                    Type convertorType = null;
-                    if (generics.Any())
-                        convertorType = typeof(BlockListToListOfTypesConvertor<>).MakeGenericType(generics.FirstOrDefault());
-                    else
-                        convertorType = typeof(BlockListToTypeConvertor<>).MakeGenericType(destPropertyType);
-
-                    ManualMaps.Add(new YuzuTypeConvertorMapperSettings()
-                    {
-                        Mapper = typeof(IYuzuTypeConvertorMapper),
-                        Convertor = convertorType
-                    });
-                }
+                    Mapper = typeof(IYuzuTypeConvertorMapper),
+                    Convertor = convertorType
+                });
             }
         }
     }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+
 
 namespace YuzuDelivery.Umbraco.BlockList
 {
@@ -17,7 +14,7 @@ namespace YuzuDelivery.Umbraco.BlockList
         }
 
         [Newtonsoft.Json.JsonProperty("rows", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<vmSub_DataGridRow> Rows { get; set; }
+        public List<vmSub_DataGridRow> Rows { get; set; }
 
         [Newtonsoft.Json.JsonProperty("_ref", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string _ref { get; set; }
@@ -25,6 +22,7 @@ namespace YuzuDelivery.Umbraco.BlockList
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.23.0 (Newtonsoft.Json v12.0.0.0)")]
+    // ReSharper disable once PartialTypeWithSinglePart
     public partial class vmSub_DataGridRow
     {
         public vmSub_DataGridRow()
@@ -36,21 +34,23 @@ namespace YuzuDelivery.Umbraco.BlockList
         public object Config { get; set; }
 
         [Newtonsoft.Json.JsonProperty("columns", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<vmSub_DataGridColumn> Columns { get; set; }
+        public List<vmSub_DataGridColumn> Columns { get; set; }
 
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+        private IDictionary<string, object> additionalProperties = new Dictionary<string, object>();
 
         [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        public IDictionary<string, object> AdditionalProperties
         {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
+            get => additionalProperties;
+            set => additionalProperties = value;
         }
 
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.23.0 (Newtonsoft.Json v12.0.0.0)")]
+    // ReSharper disable once PartialTypeWithSinglePart
+    // ReSharper disable once InconsistentNaming
     public partial class vmSub_DataGridColumn
     {
         public vmSub_DataGridColumn()
@@ -65,15 +65,15 @@ namespace YuzuDelivery.Umbraco.BlockList
         public object Config { get; set; }
 
         [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<vmBlock_DataGridRowItem> Items { get; set; }
+        public List<vmBlock_DataGridRowItem> Items { get; set; }
 
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+        private IDictionary<string, object> additionalProperties = new Dictionary<string, object>();
 
         [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        public IDictionary<string, object> AdditionalProperties
         {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
+            get => additionalProperties;
+            set => additionalProperties = value;
         }
 
 

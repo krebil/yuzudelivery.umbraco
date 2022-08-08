@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Reflection;
 using YuzuDelivery.Core;
 
 #if NETCOREAPP
 using Microsoft.Extensions.DependencyInjection;
-using Umbraco.Cms.Core.Composing;
-using Umbraco.Cms.Core;
+
 #else
 using Umbraco.Core.Composing;
 using Umbraco.Core;
@@ -39,8 +34,8 @@ namespace YuzuDelivery.Umbraco.Core
         public static void RegisterYuzuManualMapping(this IServiceCollection services, Assembly profileAssembly)
         {
             var types = profileAssembly.GetTypes();
-            var allowedTypes = new Type[] { typeof(YuzuMappingConfig) };
-            var allowedInterfaces = new Type[] { typeof(IYuzuTypeAfterConvertor), typeof(IYuzuTypeConvertor), typeof(IYuzuTypeFactory), typeof(IYuzuPropertyAfterResolver), typeof(IYuzuPropertyReplaceResolver), typeof(IYuzuFullPropertyResolver) };
+            var allowedTypes = new[] { typeof(YuzuMappingConfig) };
+            var allowedInterfaces = new[] { typeof(IYuzuTypeAfterConvertor), typeof(IYuzuTypeConvertor), typeof(IYuzuTypeFactory), typeof(IYuzuPropertyAfterResolver), typeof(IYuzuPropertyReplaceResolver), typeof(IYuzuFullPropertyResolver) };
 
             foreach (var i in types.Where(x => allowedTypes.Contains(x.BaseType) || allowedInterfaces.Intersect(x.GetInterfaces()).Any()))
             {
@@ -76,8 +71,8 @@ namespace YuzuDelivery.Umbraco.Core
             => composition.Register<IMapper>((factory) =>
             {
                 var types = profileAssembly.GetTypes();
-                var allowedTypes = new Type[] { typeof(YuzuMappingConfig) };
-                var allowedInterfaces = new Type[] { typeof(IYuzuTypeAfterConvertor), typeof(IYuzuTypeConvertor), typeof(IYuzuTypeFactory), typeof(IYuzuPropertyAfterResolver), typeof(IYuzuPropertyReplaceResolver), typeof(IYuzuFullPropertyResolver) };
+                var allowedTypes = new [] { typeof(YuzuMappingConfig) };
+                var allowedInterfaces = new [] { typeof(IYuzuTypeAfterConvertor), typeof(IYuzuTypeConvertor), typeof(IYuzuTypeFactory), typeof(IYuzuPropertyAfterResolver), typeof(IYuzuPropertyReplaceResolver), typeof(IYuzuFullPropertyResolver) };
 
                 foreach (var i in types.Where(x => allowedTypes.Contains(x.BaseType) || allowedInterfaces.Intersect(x.GetInterfaces()).Any()))
                 {

@@ -9,13 +9,10 @@ using YuzuDelivery.Umbraco.Import;
 
 #if NETCOREAPP
 using Umbraco.Cms.Core;
-using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.Models.Blocks;
 #else
 using Umbraco.Core;
-using Umbraco.Core.Models;
-using Umbraco.Core.Models.Blocks;
 #endif
+
 
 namespace YuzuDelivery.Umbraco.BlockList
 {
@@ -38,7 +35,7 @@ namespace YuzuDelivery.Umbraco.BlockList
             {
                 var layout = new BlockListDbModel.LayoutItem();
 
-                var contentRawData = data["content"] != null ? data["content"] : data;
+                var contentRawData = data["content"] ?? data;
                 var content = GetObject(contentRawData, contentImportPropertyService, vmLink, contentVmName);
 
                 outputModel.ContentData.Add(JObject.FromObject(content));
@@ -76,27 +73,25 @@ namespace YuzuDelivery.Umbraco.BlockList
                 throw new Exception($"Block list content mapping vm name link not found, a missing _ref on objects for object {JsonConvert.SerializeObject(data, Formatting.Indented)}");
             }
 
-            var output = new Dictionary<string, object>();
-            output["contentTypeKey"] = vmLink.ContentType.Umb().Key;
-            output["udi"] = Udi.Create("element", guidFactory.CreateNew(vmLink.ContentType.Umb().Key));
+            var output = new Dictionary<string, object>
+            {
+                ["contentTypeKey"] = vmLink.ContentType.Umb().Key,
+                ["udi"] = Udi.Create("element", guidFactory.CreateNew(vmLink.ContentType.Umb().Key))
+            };
 
             foreach (var m in vmLink.Mappings.Where(x => x.CmsPropertyType != null).OrderBy(x => x.CmsPropertyType.SortOrder))
             {
-                if (m.VmProperty != null)
+                if (m.VmProperty == null) continue;
+                var propertyName = GetJsonPropertyName(m.VmProperty);
+                if (data[propertyName] == null) continue;
+                var propertyValue = data[propertyName].ToString();
+                contentImportPropertyService.ImportProperty(vmLink.ContentType.Name, "blockList", m, propertyValue, (name, value) =>
                 {
-                    var proprtyName = GetJsonPropertyName(m.VmProperty);
-                    if (data[proprtyName] != null)
-                    {
-                        var propertyValue = data[proprtyName].ToString();
-                        contentImportPropertyService.ImportProperty(vmLink.ContentType.Name, "blockList", m, propertyValue, (name, value) =>
-                        {
-                            if (IsValidJson(value))
-                                output[name] = JToken.Parse(value);
-                            else
-                                output[name] = value;
-                        });
-                    }
-                }
+                    if (IsValidJson(value))
+                        output[name] = JToken.Parse(value);
+                    else
+                        output[name] = value;
+                });
             }
 
             return output;
@@ -107,31 +102,25 @@ namespace YuzuDelivery.Umbraco.BlockList
             return property.GetCustomAttributes<JsonPropertyAttribute>().Select(x => x.PropertyName).FirstOrDefault();
         }
 
-        private bool IsValidJson(string strInput)
+        private static bool IsValidJson(string strInput)
         {
             strInput = strInput.Trim();
-            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
-                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
+            if ((!strInput.StartsWith("{") || !strInput.EndsWith("}")) &&
+                (!strInput.StartsWith("[") || !strInput.EndsWith("]"))) return false;
+            try
             {
-                try
-                {
-                    var obj = JToken.Parse(strInput);
-                    return true;
-                }
-                catch (JsonReaderException jex)
-                {
-                    //Exception in parsing json
-                    Console.WriteLine(jex.Message);
-                    return false;
-                }
-                catch (Exception ex) //some other exception
-                {
-                    Console.WriteLine(ex.ToString());
-                    return false;
-                }
+                JToken.Parse(strInput);
+                return true;
             }
-            else
+            catch (JsonReaderException jex)
             {
+                //Exception in parsing json
+                Console.WriteLine(jex.Message);
+                return false;
+            }
+            catch (Exception ex) //some other exception
+            {
+                Console.WriteLine(ex.ToString());
                 return false;
             }
         }
@@ -144,7 +133,7 @@ namespace YuzuDelivery.Umbraco.BlockList
     {
         public virtual Guid CreateNew(Guid key)
         {
-            return System.Guid.NewGuid();
+            return Guid.NewGuid();
         }
     } 
 }

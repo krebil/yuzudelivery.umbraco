@@ -1,13 +1,12 @@
-﻿using System.Linq;
-using Umbraco.Forms.Core;
-
-#if NETCOREAPP
+﻿#if NETCOREAPP
 using Microsoft.Extensions.Options;
 using Umbraco.Forms.Core.Configuration;
 using Umbraco.Forms.Web.Models;
 #else
 using Umbraco.Forms.Mvc.Models;
+using Umbraco.Forms.Core;
 #endif
+
 
 namespace YuzuDelivery.Umbraco.Forms
 {

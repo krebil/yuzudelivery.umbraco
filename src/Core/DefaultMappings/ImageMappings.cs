@@ -4,7 +4,7 @@
 using Umbraco.Extensions;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Web;
+
 #else
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;

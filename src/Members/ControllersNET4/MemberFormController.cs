@@ -1,12 +1,8 @@
 ﻿#if NET472_OR_GREATER
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YuzuDelivery.Umbraco.Forms;
 using YuzuDelivery.Umbraco.Core;
-using Umbraco.Web.WebApi;
 using Umbraco.Web.Mvc;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web.Controllers;

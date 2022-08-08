@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Umbraco.Web.PropertyEditors;
+﻿using Umbraco.Web.PropertyEditors;
 using NUnit.Framework;
 using Autofac;
-using YuzuDelivery.Umbraco.Core;
 using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Umbraco.Import.Tests.Integration;
 

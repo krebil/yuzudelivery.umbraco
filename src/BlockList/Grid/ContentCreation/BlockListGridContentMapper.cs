@@ -11,8 +11,10 @@ using Umbraco.Cms.Core;
 using Umbraco.Core;
 #endif
 
+
 namespace YuzuDelivery.Umbraco.BlockList
 {
+    // ReSharper disable once PartialTypeWithSinglePart
     public partial class BlockListGridContentMapper : IContentMapper
     {
         private readonly BlockListGridRowConfigToContent gridRowConfigToContent;
@@ -42,13 +44,14 @@ namespace YuzuDelivery.Umbraco.BlockList
             return JsonConvert.SerializeObject(output, Formatting.Indented);
         }
 
+        // ReSharper disable once MemberCanBeProtected.Global
         public virtual BlockListDbModel Rows(JObject contentObj, ContentPropertyConfig config, IContentMapperFactory contentMapperFactory, IContentImportPropertyService contentImportPropertyService)
         {
             var outputModel = new BlockListDbModel();
 
-            var gridconfigs = gridRowConfigToContent.GetSectionBlocks(config);
-            var sectionProperties = gridRowConfigToContent.GetProperties(gridconfigs);
-            var sectionNames = sectionProperties.Select(x => new { ContentTypeName = x.Type, Size = x.Size }).Distinct();
+            var gridConfigs = gridRowConfigToContent.GetSectionBlocks(config);
+            var sectionProperties = gridRowConfigToContent.GetProperties(gridConfigs);
+            var sectionNames = sectionProperties.Select(x => new { ContentTypeName = x.Type, x.Size }).Distinct();
 
             var contentTypes = sectionNames.Select(x => {
                 var contentType = contentTypeService.GetByAlias(x.ContentTypeName);
@@ -96,9 +99,11 @@ namespace YuzuDelivery.Umbraco.BlockList
 
             var key = contentTypes.Where(x => x.Size == gridSize).Select(x => x.Key).FirstOrDefault();
 
-            var output = new Dictionary<string, object>();
-            output["contentTypeKey"] = key;
-            output["udi"] = Udi.Create("element", guidFactory.CreateNew(key));
+            var output = new Dictionary<string, object>
+            {
+                ["contentTypeKey"] = key,
+                ["udi"] = Udi.Create("element", guidFactory.CreateNew(key))
+            };
 
             var contentSectionProperties = allSectionProperties.Where(x => x.Size == gridSize && !x.IsSettings).ToList();
             var index = 0;
@@ -115,7 +120,7 @@ namespace YuzuDelivery.Umbraco.BlockList
                 index = 0;
                 foreach (var property in configSectionProperties)
                 {
-                    var configObj = sections[index]["config"] as JToken;
+                    var configObj = sections[index]["config"];
                     if (configObj != null)
                     {
                         var items = new JArray(configObj);

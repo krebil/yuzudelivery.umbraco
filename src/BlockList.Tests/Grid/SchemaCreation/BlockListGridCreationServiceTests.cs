@@ -1,23 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using Rhino.Mocks;
-using Mod = Umbraco.Core.Models;
-using Umbraco.Core.PropertyEditors;
-using Umbraco.Web.PropertyEditors;
-using Newtonsoft.Json;
-using Umb = Umbraco.Core.Services;
-using Umbraco.Core.Logging;
+﻿using System.Linq;
 using ApprovalTests;
 using ApprovalTests.Reporters;
+using Autofac;
+using NUnit.Framework;
+using Umbraco.Web.PropertyEditors;
 using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Umbraco.Import.Tests.Integration;
-using Autofac;
 
-namespace YuzuDelivery.Umbraco.BlockList.Tests.Grid
+namespace YuzuDelivery.Umbraco.BlockList.Tests.Grid.SchemaCreation
 {
     [Category("BlockListEditor")]
     [UseReporter(typeof(DiffReporter))]
@@ -219,7 +209,7 @@ namespace YuzuDelivery.Umbraco.BlockList.Tests.Grid
             {
                 var config = umb.DataType.Added["Test Grid Sections"].Configuration as BlockListConfiguration;
                 Assert.AreEqual("thumbnail", config.Blocks[0].Thumbnail);
-                Assert.AreEqual(null, config.Blocks[1].Thumbnail); ;
+                Assert.AreEqual(null, config.Blocks[1].Thumbnail);
             }
 
         }

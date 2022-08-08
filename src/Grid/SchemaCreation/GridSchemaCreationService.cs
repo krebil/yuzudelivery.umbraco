@@ -5,10 +5,8 @@ using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Grid;
 
 #if NETCOREAPP
-using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 #else
-using Umbraco.Core.Models;
 using Umbraco.Web.PropertyEditors;
 #endif
 

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Umbraco.Web.PropertyEditors;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Autofac;
-using YuzuDelivery.Umbraco.Core;
 using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Umbraco.Import.Tests.Integration;
+
 
 namespace YuzuDelivery.Umbraco.Core.Tests
 {
@@ -55,7 +52,7 @@ namespace YuzuDelivery.Umbraco.Core.Tests
         public void can_create_image_property()
         {
             umb.DataType.AddAndStubGet(1, "Media Picker")
-                .PropertyType.ForCreating<vmBlock_Test>(x => x.Image, 1, 1);
+                .PropertyType.ForCreating<vmBlock_Test>(x => x.Image);
 
             svc.ChangeProperty(map);
 

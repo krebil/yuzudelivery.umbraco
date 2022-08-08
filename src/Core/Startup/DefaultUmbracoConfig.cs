@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
-using System.Web;
-using System.Configuration;
 using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Import;
 
@@ -30,7 +26,7 @@ namespace YuzuDelivery.Umbraco.Core
             var pagesLocation = settings.Pages;
             var partialsLocation = settings.Partials;
 
-            ViewModelAssemblies = new Assembly[] { localAssembly };
+            ViewModelAssemblies = new[] { localAssembly };
 
             CMSModels = localAssembly.GetTypes().Where(x => x.GetCustomAttribute<PublishedModelAttribute>() != null).ToList();
 
@@ -77,12 +73,12 @@ namespace YuzuDelivery.Umbraco.Core
                 return cache.Get("feTemplates", () => templateService.RegisterAll()) as Dictionary<string, Func<object, string>>;
             };
 
-            GetRenderedHtmlCache = (IRenderSettings renderSettings) => {
+            GetRenderedHtmlCache = renderSettings => {
                 var cache = factory.GetInstance<IAppPolicyCache>();
                 return cache.Get(renderSettings.CacheName) as string;
             };
 
-            SetRenderedHtmlCache = (IRenderSettings renderSettings, string html) => {
+            SetRenderedHtmlCache = (renderSettings, html) => {
                 var cache = factory.GetInstance<IAppPolicyCache>();
                 cache.Insert(renderSettings.CacheName, () => { return html; }, new TimeSpan(0, 0, renderSettings.CacheExpiry));
             };

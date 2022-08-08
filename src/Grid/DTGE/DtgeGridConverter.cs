@@ -2,13 +2,10 @@
 using Skybrud.Umbraco.GridData.Converters;
 
 #if NETCOREAPP
-using Skybrud.Umbraco.GridData;
 using Skybrud.Umbraco.GridData.Models;
 using Skybrud.Umbraco.GridData.Models.Values;
 using Our.Umbraco.DocTypeGridEditor.Helpers;
 #else
-using Skybrud.Umbraco.GridData;
-using Skybrud.Umbraco.GridData.Values;
 using Skybrud.Umbraco.GridData.Interfaces;
 #endif
 

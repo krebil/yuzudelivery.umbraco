@@ -9,6 +9,7 @@ using Umb = Umbraco.Core.Composing;
 using Umbraco.Core;
 #endif
 
+
 namespace YuzuDelivery.Umbraco.Core
 {
     public interface IFactory
@@ -23,51 +24,51 @@ namespace YuzuDelivery.Umbraco.Core
 #if NETCOREAPP
     public class Umb9Factory : IFactory
     {
-        private readonly IServiceProvider _factory;
+        private readonly IServiceProvider factory;
         public Umb9Factory(IServiceProvider factory)
         {
-            _factory = factory;
+            this.factory = factory;
         }
 
         public object GetInstance(Type type)
         {
-            return _factory.GetService(type);
+            return factory.GetService(type);
         }
 
         public TService GetInstance<TService>() where TService : class
         {
-            return _factory.GetService<TService>();
+            return factory.GetService<TService>();
         }
 
         public IEnumerable<TService> GetAllInstances<TService>() where TService : class
         {
-            return _factory.GetServices<TService>();
+            return factory.GetServices<TService>();
         }
     }
 #else
     public class Umb8Factory : IFactory
     {
-        private readonly Umb.IFactory _factory;
+        private readonly Umb.IFactory factory;
         public Umb8Factory(Umb.IFactory factory)
         {
-            _factory = factory;
+            this.factory = factory;
         }
 
         public object GetInstance(Type type)
         {
-            return _factory.GetInstance(type);
+            return factory.GetInstance(type);
         }
 
         public TService GetInstance<TService>()
             where TService : class
         {
-            return _factory.GetInstance<TService>();
+            return factory.GetInstance<TService>();
         }
 
         public IEnumerable<TService> GetAllInstances<TService>()
             where TService : class
         {
-            return _factory.GetAllInstances<TService>();
+            return factory.GetAllInstances<TService>();
         }
     }
 #endif

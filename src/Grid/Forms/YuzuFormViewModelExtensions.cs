@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using YuzuDelivery.Umbraco.Core;
 using Skybrud.Umbraco.GridData.Dtge;
 
 #if NETCOREAPP
+using System.Threading.Tasks;
 using Umbraco.Extensions;
 using Umbraco.Cms.Web.Common.UmbracoContext;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +14,6 @@ using Skybrud.Umbraco.GridData.Models;
 #else
 using System.Web.Mvc;
 using Umbraco.Web;
-using Umbraco.Web.Mvc;
 using Umbraco.Core.Models.PublishedContent;
 using Skybrud.Umbraco.GridData;
 #endif

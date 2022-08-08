@@ -3,58 +3,59 @@ using AutoMapper.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Core;
 
+
 namespace YuzuDelivery.Umbraco.Core
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class DefaultPropertyReplaceMapper : IYuzuPropertyReplaceMapper
     {
         private readonly IYuzuDeliveryImportConfiguration importConfig;
         private readonly IMappingContextFactory contextFactory;
 
-        public DefaultPropertyReplaceMapper(IYuzuDeliveryImportConfiguration importConfig, IMappingContextFactory contextFatcory)
+        public DefaultPropertyReplaceMapper(IYuzuDeliveryImportConfiguration importConfig,
+            IMappingContextFactory contextFactory)
         {
             this.importConfig = importConfig;
-            this.contextFactory = contextFatcory;
+            this.contextFactory = contextFactory;
         }
 
         public MethodInfo MakeGenericMethod(YuzuMapperSettings baseSettings)
         {
-            var settings = baseSettings as YuzuPropertyMapperSettings;
-
-            if (settings != null)
+            if (baseSettings is YuzuPropertyMapperSettings settings)
             {
-                var genericArguments = settings.Resolver.GetInterfaces().FirstOrDefault().GetGenericArguments().ToList();
-                genericArguments.Add(settings.Dest);
-                genericArguments.Add(settings.Resolver);
+                var genericArguments =
+                    settings.Resolver.GetInterfaces().FirstOrDefault()?.GetGenericArguments().ToList();
+                genericArguments?.Add(settings.Dest);
+                genericArguments?.Add(settings.Resolver);
 
                 var method = GetType().GetMethod("CreateMap");
-                return method.MakeGenericMethod(genericArguments.ToArray());
+                if (genericArguments != null && method != null)
+                    return method.MakeGenericMethod(genericArguments.ToArray());
             }
-            else
-                throw new Exception("Mapping settings not of type YuzuPropertyMappingSettings");
+            throw new Exception("Mapping settings not of type YuzuPropertyMappingSettings");
         }
 
-        public AddedMapContext CreateMap<Source, DestMember, Dest, Resolver>(MapperConfigurationExpression cfg, YuzuMapperSettings baseSettings, IFactory factory, AddedMapContext mapContext, IYuzuConfiguration config)
+        public AddedMapContext CreateMap<Source, DestMember, Dest, Resolver>(MapperConfigurationExpression cfg,
+            YuzuMapperSettings baseSettings, IFactory factory, AddedMapContext mapContext, IYuzuConfiguration config)
             where Resolver : class, IYuzuPropertyReplaceResolver<Source, DestMember>
         {
-            var settings = baseSettings as YuzuPropertyMapperSettings;
-
-            if (settings != null)
+            if (baseSettings is YuzuPropertyMapperSettings settings)
             {
                 config.AddActiveManualMap<Resolver, Dest>(settings.DestPropertyName);
 
                 if (settings.IgnoreProperty)
-                    importConfig.IgnorePropertiesInViewModels.Add(new KeyValuePair<string, string>(typeof(Dest).Name, settings.DestPropertyName));
+                    importConfig.IgnorePropertiesInViewModels.Add(
+                        new KeyValuePair<string, string>(typeof(Dest).Name, settings.DestPropertyName));
 
                 if (settings.IgnoreReturnType)
                 {
-                    if(typeof(DestMember).IsGenericType)
-                        importConfig.IgnoreViewmodels.Add(typeof(DestMember).GetGenericArguments().Select(x => x.Name).FirstOrDefault());
+                    if (typeof(DestMember).IsGenericType)
+                        importConfig.IgnoreViewmodels.Add(typeof(DestMember).GetGenericArguments().Select(x => x.Name)
+                            .FirstOrDefault());
                     else
                         importConfig.IgnoreViewmodels.Add(typeof(DestMember).Name);
                 }
@@ -63,23 +64,21 @@ namespace YuzuDelivery.Umbraco.Core
                 if (!string.IsNullOrEmpty(settings.GroupName))
                     cfg.RecognizePrefixes(settings.GroupName);
 
-                Func<Source, Dest, object, ResolutionContext, DestMember> mappingFunction = (Source m, Dest v, object o, ResolutionContext context) =>
+                DestMember MappingFunction(Source m, Dest v, object o, ResolutionContext context)
                 {
                     var propertyResolver = factory.GetInstance(typeof(Resolver)) as Resolver;
                     var yuzuContext = contextFactory.From<UmbracoMappingContext>(context.Items);
                     return propertyResolver.Resolve(m, yuzuContext);
-                };
+                }
 
                 var map = mapContext.AddOrGet<Source, Dest>(cfg);
 
-                map.ForMember(settings.DestPropertyName, opt => opt.MapFrom(mappingFunction));
+                map.ForMember(settings.DestPropertyName, opt => opt.MapFrom(MappingFunction));
 
                 return mapContext;
             }
             else
                 throw new Exception("Mapping settings not of type YuzuPropertyMappingSettings");
         }
-
     }
-
 }

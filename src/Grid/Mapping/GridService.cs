@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 using Skybrud.Umbraco.GridData.Dtge;
-using Newtonsoft.Json;
 using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Core;
 

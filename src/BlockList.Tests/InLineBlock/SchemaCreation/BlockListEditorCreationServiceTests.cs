@@ -1,18 +1,13 @@
-﻿using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
-using Rhino.Mocks;
-using Umbraco.Core.Models;
 using Umbraco.Web.PropertyEditors;
-using Newtonsoft.Json;
 using Umb = Umbraco.Core.Services;
-using Umbraco.Core.Logging;
 using YuzuDelivery.Umbraco.Import;
 using ApprovalTests;
 using ApprovalTests.Reporters;
 using YuzuDelivery.Umbraco.Import.Tests.Integration;
 using Autofac;
+
 
 namespace YuzuDelivery.Umbraco.BlockList.Tests.Inline
 {

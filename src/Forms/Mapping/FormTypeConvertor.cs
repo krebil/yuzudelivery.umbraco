@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Core;
 
 #if NETCOREAPP
-using Microsoft.AspNetCore.Mvc;
+
 #else
-using System.Web.Mvc;
 using System.Web.Mvc.Html;
 #endif
 
@@ -70,7 +65,7 @@ namespace YuzuDelivery.Umbraco.Forms
 
                 var formBuilderTemplate = context.Items["FormBuilderTemplate"].ToString();
 
-                if (formValue != null && formValue.ToString() != string.Empty)
+                if (formValue != null && formValue != string.Empty)
                 {
                     return new vmBlock_DataForm()
                     {

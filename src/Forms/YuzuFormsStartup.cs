@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using YuzuDelivery.Core;
+﻿using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Core;
 using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Core.ViewModelBuilder;
 
-#if NETCOREAPP 
-using Umbraco.Extensions;
+#if NETCOREAPP
 using Umbraco.Cms.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
-using Umbraco.Cms.Core.Models.PublishedContent;
+
 #else
 using Umbraco.Core;
 using Umbraco.Core.Composing;
-using Umbraco.Core.Models.PublishedContent;
 #endif
 
 namespace YuzuDelivery.Umbraco.Forms
@@ -83,7 +76,6 @@ namespace YuzuDelivery.Umbraco.Forms
     public class FormVmBuilderConfig : UpdateableVmBuilderConfig
     {
         public FormVmBuilderConfig()
-            : base()
         {
             ExcludeViewmodelsAtGeneration.Add<vmBlock_Form>();
             ExcludeViewmodelsAtGeneration.Add<vmBlock_DataForm>();

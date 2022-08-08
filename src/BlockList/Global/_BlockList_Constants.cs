@@ -1,6 +1,7 @@
-﻿namespace YuzuDelivery.Umbraco.Core
+﻿
+namespace YuzuDelivery.Umbraco.Core
 {
-    public static class _BlockList_Constants
+    public static class BlockListConstants
     {
         public const string IsInPreview = "BL_IsInPreview";
 

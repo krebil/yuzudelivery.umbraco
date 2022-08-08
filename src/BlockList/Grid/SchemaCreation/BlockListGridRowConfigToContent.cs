@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+
 namespace YuzuDelivery.Umbraco.Import
 {
     public class BlockListGridRowConfigToContent

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-#if NETCOREAPP 
+﻿#if NETCOREAPP 
 using Umbraco.Forms.Web.Models;
 #else
 using Umbraco.Forms.Mvc.Models;

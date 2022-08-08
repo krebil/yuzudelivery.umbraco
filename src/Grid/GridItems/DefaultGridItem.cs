@@ -1,8 +1,8 @@
-﻿using Skybrud.Umbraco.GridData;
-using Skybrud.Umbraco.GridData.Dtge;
+﻿using Skybrud.Umbraco.GridData.Dtge;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using Skybrud.Umbraco.GridData;
 using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Core;
 

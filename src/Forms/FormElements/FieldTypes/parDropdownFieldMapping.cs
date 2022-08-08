@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System;
 
 #if NETCOREAPP 
 using Umbraco.Forms.Web.Models;
@@ -19,7 +18,7 @@ namespace YuzuDelivery.Umbraco.Forms
 
         public object Apply(FieldViewModel model)
         {
-            var options = model.PreValues.Select((a, index) => new SelectedItem() { option = a.Value, value = a.Value }).ToList();
+            var options = model.PreValues.Select((a) => new SelectedItem() { option = a.Value, value = a.Value }).ToList();
 
             var selectedOption = options.Where(x => model.Values.Any(y => y.ToString() == x.value)).FirstOrDefault();
             if (selectedOption != null) selectedOption.selected = true;

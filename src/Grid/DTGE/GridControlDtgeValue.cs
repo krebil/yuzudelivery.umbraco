@@ -8,7 +8,6 @@ using Skybrud.Umbraco.GridData.Models;
 using Skybrud.Umbraco.GridData.Models.Values;
 using Umbraco.Cms.Core.Models.PublishedContent;
 #else
-using Skybrud.Umbraco.GridData;
 using Skybrud.Umbraco.GridData.Values;
 using Umbraco.Core.Models.PublishedContent;
 #endif

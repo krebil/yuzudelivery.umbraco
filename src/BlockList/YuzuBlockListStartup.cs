@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using YuzuDelivery.Core;
 using YuzuDelivery.Core.ViewModelBuilder;
@@ -12,7 +11,6 @@ using System.Reflection;
 using Umbraco.Extensions;
 using Umbraco.Cms.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Models.PublishedContent;
 #else
@@ -84,22 +82,16 @@ namespace YuzuDelivery.Umbraco.BlockList
 
                 var baseGridType = typeof(DefaultGridItem<,>);
                 var gridItems = new List<IGridItemInternal>();
+                if (config == null) return gridItems;
                 var viewmodelTypes = config.ViewModels.Where(x => x.Name.StartsWith(YuzuConstants.Configuration.BlockPrefix));
 
-                foreach (var viewModelType in viewmodelTypes)
-                {
-                    var umbracoModelTypeName = viewModelType.Name.Replace(YuzuConstants.Configuration.BlockPrefix, "");
-                    var alias = umbracoModelTypeName.FirstCharacterToLower();
-                    var umbracoModelType = config.CMSModels.Where(x => x.Name == umbracoModelTypeName).FirstOrDefault();
-
-                    if (umbracoModelType != null && umbracoModelType.BaseType == typeof(PublishedElementModel))
-                    {
-                        var makeme = baseGridType.MakeGenericType(new Type[] { umbracoModelType, viewModelType });
-                        var o = Activator.CreateInstance(makeme, new object[] { alias, mapper, typeFactoryRunner, publishedValueFallback }) as IGridItemInternal;
-
-                        gridItems.Add(o);
-                    }
-                }
+                gridItems.AddRange(from viewModelType in viewmodelTypes 
+                    let umbracoModelTypeName = viewModelType.Name.Replace(YuzuConstants.Configuration.BlockPrefix, "") 
+                    let alias = YuzuDelivery.Core.StringExtensions.FirstCharacterToLower(umbracoModelTypeName) 
+                    let umbracoModelType = config.CMSModels.FirstOrDefault(x => x.Name == umbracoModelTypeName)
+                    where umbracoModelType != null && umbracoModelType.BaseType == typeof(PublishedElementModel) 
+                    let makeMe = baseGridType.MakeGenericType(new Type[] { umbracoModelType, viewModelType }) 
+                    select Activator.CreateInstance(makeMe, new object[] { alias, mapper, typeFactoryRunner, publishedValueFallback }) as IGridItemInternal);
 
                 return gridItems;
             });
@@ -204,7 +196,6 @@ namespace YuzuDelivery.Umbraco.BlockList
     public class BlockListGridVmBuilderConfig : UpdateableVmBuilderConfig
     {
         public BlockListGridVmBuilderConfig()
-            : base()
         {
             ExcludeViewmodelsAtGeneration.Add<vmBlock_DataGrid>();
             ExcludeViewmodelsAtGeneration.Add<vmSub_DataGridRow>();
@@ -219,7 +210,6 @@ namespace YuzuDelivery.Umbraco.BlockList
     public class BlockListGridImportConfig : UpdateableImportConfiguration
     {
         public BlockListGridImportConfig(IVmPropertyFinder vmPropertyFinder)
-            : base()
         {
             IgnoreViewmodels.Add<vmBlock_DataRows>();
             IgnoreViewmodels.Add<vmBlock_DataGrid>();

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace YuzuDelivery.Umbraco.BlockList
 {
     #pragma warning disable // Disable all warnings
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.23.0 (Newtonsoft.Json v12.0.0.0)")]
+    // ReSharper disable once PartialTypeWithSinglePart
+    // ReSharper disable once InconsistentNaming
     public partial class vmBlock_DataGridRowItem
     {
 
@@ -18,13 +15,14 @@ namespace YuzuDelivery.Umbraco.BlockList
         [Newtonsoft.Json.JsonProperty("content", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public object Content { get; set; }
 
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+        private System.Collections.Generic.IDictionary<string, object> additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
 
         [Newtonsoft.Json.JsonExtensionData]
+        // ReSharper disable once ConvertToAutoProperty
         public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
         {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
+            get => additionalProperties;
+            set => additionalProperties = value;
         }
     }
 }

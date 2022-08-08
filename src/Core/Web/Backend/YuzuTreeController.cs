@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-#if NETCOREAPP
+﻿#if NETCOREAPP
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Core.Trees;
 using Umbraco.Cms.Web.Common.ModelBinders;

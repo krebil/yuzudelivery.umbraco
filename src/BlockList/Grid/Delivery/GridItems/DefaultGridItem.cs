@@ -1,22 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Dynamic;
 using YuzuDelivery.Core;
-using YuzuDelivery.Umbraco.Core;
-using YuzuDelivery.Umbraco.Import;
 
 #if NETCOREAPP
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Models.Blocks;
+
 #else
 using Umbraco.Core.Models.PublishedContent;
-using Umbraco.Core.Models.Blocks;
 #endif
+
 
 namespace YuzuDelivery.Umbraco.BlockList
 {
-    public class DefaultGridItem<M, V> : IGridItem, IGridItemInternal
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
+    public class DefaultGridItem<M, V> : IGridItemInternal
         where M : PublishedElementModel
     {
         private string docTypeAlias;
@@ -40,7 +37,7 @@ namespace YuzuDelivery.Umbraco.BlockList
 #endif
         }
 
-        public Type ElementType { get { return typeof(M); } }
+        public Type ElementType => typeof(M);
 
         public virtual bool IsValid(IPublishedElement content)
         {
@@ -53,19 +50,11 @@ namespace YuzuDelivery.Umbraco.BlockList
 
         public virtual object Apply(IPublishedElement model, IDictionary<string, object> contextItems)
         {
-#if NETCOREAPP
-            var item = model.ToElement<M>(publishedValueFallback);
-#else
-            var item = model.ToElement<M>();
-#endif
-
             var output = typeFactoryRunner.Run<V>(contextItems);
             if (output == null)
                 output = mapper.Map<V>(model, contextItems);
 
             return output;
         }
-
     }
-
 }

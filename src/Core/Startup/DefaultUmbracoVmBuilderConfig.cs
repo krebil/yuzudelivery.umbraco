@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YuzuDelivery.Core.ViewModelBuilder;
-using System.Web;
-using System.Configuration;
 using System.IO;
 using Imp = YuzuDelivery.Umbraco.Import;
 
 #if NETCOREAPP
 using Umbraco.Extensions;
-using Umbraco.Cms.Core;
-using Umbraco.Cms.Core.Exceptions;
 using ConfigurationException = Umbraco.Cms.Core.Exceptions.ConfigurationException;
 #else
 using Umbraco.Core;
+using System.Configuration;
 #endif
 
 namespace YuzuDelivery.Umbraco.Core

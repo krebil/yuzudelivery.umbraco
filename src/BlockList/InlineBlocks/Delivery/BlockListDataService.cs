@@ -3,17 +3,14 @@ using System.Linq;
 using System.Collections.Generic;
 using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Core;
-using YuzuDelivery.UmbracoModels;
-using YuzuDelivery.ViewModels;
-using YuzuDelivery.Umbraco.Import;
 
 #if NETCOREAPP
 using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 #else
 using Umbraco.Core.Models.Blocks;
-using Umbraco.Core.Models.PublishedContent;
 #endif
+
 
 namespace YuzuDelivery.Umbraco.BlockList
 {
@@ -41,7 +38,7 @@ namespace YuzuDelivery.Umbraco.BlockList
             this.publishedValueFallback = publishedValueFallback;
 #endif
 
-            this.viewmodelTypes = config.ViewModels.Where(x => x.Name.StartsWith(YuzuConstants.Configuration.BlockPrefix) || x.Name.StartsWith(YuzuConstants.Configuration.SubPrefix));
+            viewmodelTypes = config.ViewModels.Where(x => x.Name.StartsWith(YuzuConstants.Configuration.BlockPrefix) || x.Name.StartsWith(YuzuConstants.Configuration.SubPrefix));
         }
 
         public bool IsItem<V>(BlockListModel model)
@@ -51,8 +48,8 @@ namespace YuzuDelivery.Umbraco.BlockList
 
         public bool IsItem(Type type, BlockListModel model)
         {
-            var alias = model.FirstOrDefault().Content.ContentType.Alias.FirstCharacterToUpper();
-            var modelType = config.CMSModels.Where(x => x.Name == alias).FirstOrDefault();
+            var alias = model.FirstOrDefault()?.Content.ContentType.Alias.FirstCharacterToUpper();
+            var modelType = config.CMSModels.FirstOrDefault(x => x.Name == alias);
 
             return modelType == type;
         }
@@ -74,30 +71,12 @@ namespace YuzuDelivery.Umbraco.BlockList
 
         public List<V> CreateList<V>(BlockListModel model, UmbracoMappingContext context)
         {
-            var output = new List<V>();
-
-            foreach (var i in model)
-            {
-                var vm = ConvertToVm<V>(i, context);
-                if (vm != null)
-                    output.Add(vm);
-            }
-
-            return output;
+            return model.Select(i => ConvertToVm<V>(i, context)).Where(vm => vm != null).ToList();
         }
 
         public List<object> CreateList(BlockListModel model, UmbracoMappingContext context)
         {
-            var output = new List<object>();
-
-            foreach (var i in model)
-            {
-                var vm = ConvertToVm(i, context);
-                if (vm != null)
-                    output.Add(vm);
-            }
-
-            return output;
+            return model.Select(i => ConvertToVm(i, context)).Where(vm => vm != null).ToList();
         }
 
         private V ConvertToVm<V>(BlockListItem i, UmbracoMappingContext context)
@@ -108,24 +87,20 @@ namespace YuzuDelivery.Umbraco.BlockList
         private object ConvertToVm(BlockListItem i, UmbracoMappingContext context)
         {
             var alias = i.Content.ContentType.Alias.FirstCharacterToUpper();
-            var modelType = config.CMSModels.Where(x => x.Name == alias).FirstOrDefault();
-            var vmType = viewmodelTypes.Where(x => x.Name.EndsWith(alias)).FirstOrDefault();
+            var modelType = config.CMSModels.FirstOrDefault(x => x.Name == alias);
+            var vmType = viewmodelTypes.FirstOrDefault(x => x.Name.EndsWith(alias));
 
 #if NETCOREAPP
             var o = i.Content.ToElement(modelType, publishedValueFallback);
 #else
             var o = i.Content.ToElement(modelType);
 #endif
-            if (o != null)
+            if (o == null) return null;
             {
-                var custom = blockListItems.Where(x => x.IsValid(i)).FirstOrDefault();
+                var custom = blockListItems.FirstOrDefault(x => x.IsValid(i));
 
-                if (custom != null)
-                    return custom.CreateVm(i, vmType, context);
-                else
-                    return mapper.Map(o, modelType, vmType, context.Items);
+                return custom != null ? custom.CreateVm(i, vmType, context) : mapper.Map(o, modelType, vmType, context.Items);
             }
-            return null;
         }
     }
 }

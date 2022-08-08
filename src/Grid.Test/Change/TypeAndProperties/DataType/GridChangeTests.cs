@@ -1,17 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using System.Linq;
 using Umbraco.Web.PropertyEditors;
 using NUnit.Framework;
 using Autofac;
-using YuzuDelivery.Umbraco.Grid;
-using Rhino.Mocks;
-using Newtonsoft.Json.Linq;
 using ApprovalTests;
 using ApprovalTests.Reporters;
 using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Umbraco.Import.Tests.Integration;
-using YuzuDelivery.Umbraco.Grid.Test;
 
 namespace YuzuDelivery.Umbraco.Grid.Test.Change.TypeAndProperties.DataType
 {

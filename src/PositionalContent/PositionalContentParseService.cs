@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Hifi.PositionalContent;
 using YuzuDelivery.Core;
-using Umbraco.Web.Models;
-using Umbraco.Web;
 using Umbraco.Core.Models.PublishedContent;
 
 namespace YuzuDelivery.Umbraco.PositionalContent

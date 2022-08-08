@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using YuzuDelivery.Umbraco.Core;
 
 namespace YuzuDelivery.Umbraco.Forms
@@ -25,7 +21,7 @@ namespace YuzuDelivery.Umbraco.Forms
         public vmSub_DataFormBuilderValidation Validation { get; set; }
 
         [Newtonsoft.Json.JsonProperty("fieldsets", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<vmSub_DataFormBuilderFieldset> Fieldsets { get; set; }
+        public List<vmSub_DataFormBuilderFieldset> Fieldsets { get; set; }
 
         [Newtonsoft.Json.JsonProperty("submitButtonText", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string SubmitButtonText { get; set; }
@@ -40,10 +36,10 @@ namespace YuzuDelivery.Umbraco.Forms
         public string FormFieldModifier { get; set; }
 
         [Newtonsoft.Json.JsonProperty("actionLinks", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<vmBlock_DataLink> ActionLinks { get; set; }
+        public List<vmBlock_DataLink> ActionLinks { get; set; }
 
         [Newtonsoft.Json.JsonProperty("pages", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<vmSub_DataFormBuilderPage> Pages { get; set; }
+        public List<vmSub_DataFormBuilderPage> Pages { get; set; }
 
         [Newtonsoft.Json.JsonProperty("previousButtonText", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string PreviousButtonText { get; set; }
@@ -58,7 +54,7 @@ namespace YuzuDelivery.Umbraco.Forms
         public string _ref { get; set; }
 
         [Newtonsoft.Json.JsonProperty("_modifiers", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<string> _modifiers { get; set; }
+        public List<string> _modifiers { get; set; }
 
 
     }
@@ -85,7 +81,7 @@ namespace YuzuDelivery.Umbraco.Forms
         public List<object> Fields { get; set; }
 
         [Newtonsoft.Json.JsonProperty("rows", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<vmSub_DataFormBuilderRow> Rows { get; set; }
+        public List<vmSub_DataFormBuilderRow> Rows { get; set; }
 
 
     }

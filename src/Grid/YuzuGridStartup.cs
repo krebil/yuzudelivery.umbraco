@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using Skybrud.Umbraco.GridData;
 using Skybrud.Umbraco.GridData.Dtge;
 using YuzuDelivery.Core;
 using YuzuDelivery.Core.ViewModelBuilder;
 using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Umbraco.Core;
 using System.Reflection;
+using Skybrud.Umbraco.GridData;
 
 #if NETCOREAPP 
 using Umbraco.Extensions;
 using Umbraco.Cms.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Skybrud.Umbraco.GridData.Composers;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Models.PublishedContent;
 #else

@@ -1,30 +1,17 @@
-﻿using AutoMapper;
-using AutoMapper.Configuration;
+﻿using AutoMapper.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
-using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Core;
+
 
 namespace YuzuDelivery.Umbraco.Core
 {
     public class DefaultGroupMapper : IYuzuGroupMapper
     {
-        private readonly IYuzuDeliveryImportConfiguration importConfig;
-
-        public DefaultGroupMapper(IYuzuDeliveryImportConfiguration importConfig)
-        {
-            this.importConfig = importConfig;
-        }
-
         public MethodInfo MakeGenericMethod(YuzuMapperSettings baseSettings)
         {
-            var settings = baseSettings as YuzuGroupMapperSettings;
-
-            if (settings != null)
+            if (baseSettings is YuzuGroupMapperSettings settings)
             {
                 var genericArguments = new List<Type>();
                 genericArguments.Add(settings.Source);
@@ -34,15 +21,13 @@ namespace YuzuDelivery.Umbraco.Core
                 var method = GetType().GetMethod("CreateMap");
                 return method.MakeGenericMethod(genericArguments.ToArray());
             }
-            else
-                throw new Exception("Mapping settings not of type YuzuGroupMapperSettings");
+
+            throw new Exception("Mapping settings not of type YuzuGroupMapperSettings");
         }
 
         public AddedMapContext CreateMap<Source, DestParent, DestChild>(MapperConfigurationExpression cfg, YuzuMapperSettings baseSettings, IFactory factory, AddedMapContext mapContext, IYuzuConfiguration config)
         {
-            var settings = baseSettings as YuzuGroupMapperSettings;
-
-            if (settings != null)
+            if (baseSettings is YuzuGroupMapperSettings settings)
             {
                 var groupNameWithoutSpaces = settings.GroupName.Replace(" ", "");
 
@@ -56,8 +41,8 @@ namespace YuzuDelivery.Umbraco.Core
 
                 return mapContext;
             }
-            else
-                throw new Exception("Mapping settings not of type YuzuGroupMapperSettings");
+
+            throw new Exception("Mapping settings not of type YuzuGroupMapperSettings");
         }
     }
 }

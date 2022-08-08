@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Umbraco.Core.Models.PublishedContent;
 
 namespace YuzuDelivery.Umbraco.PositionalContent
 {

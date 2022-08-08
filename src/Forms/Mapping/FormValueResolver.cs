@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using YuzuDelivery.Core;
 using YuzuDelivery.Umbraco.Core;
 
 #if NETCOREAPP
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+
 #else
-using System.Web.Mvc;
 using System.Web.Mvc.Html;
 #endif
 

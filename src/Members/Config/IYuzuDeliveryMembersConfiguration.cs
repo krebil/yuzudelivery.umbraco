@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
-#if NETCOREAPP 
-using Umbraco.Cms.Core.Models;
+#if NETCOREAPP
+
 #else
-using Umbraco.Core.Models;
 #endif
 
 namespace YuzuDelivery.Umbraco.Members

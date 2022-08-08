@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using YuzuDelivery.Umbraco.Import;
 using YuzuDelivery.Core;
 
 #if NETCOREAPP
-using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umb = Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Core.Logging;
+
 #else
-using Umbraco.Core.Models;
-using Umbraco.Core;
 using Umbraco.Web.PropertyEditors;
 using Umb = Umbraco.Core.Services;
-using Umbraco.Core.Logging;
 #endif
+
 
 namespace YuzuDelivery.Umbraco.Import
 {
@@ -41,7 +33,7 @@ namespace YuzuDelivery.Umbraco.Import
             this.contentTypeForVmTypeService = contentTypeForVmTypeService;
         }
 
-        public IDataType CreateOrUpdate(string dataTypeName, string[] subBlocks, Options options = null)
+        public IDataType CreateOrUpdate(string dataTypeName, IEnumerable<string> subBlocks, Options options = null)
         {
             var blocks = new List<BlockListConfiguration.BlockConfiguration>();
 
@@ -50,8 +42,7 @@ namespace YuzuDelivery.Umbraco.Import
                 dataTypeDefinition = dataTypeService.CreateDataType(dataTypeName, DataEditorName);
             else
             {
-                var config = dataTypeDefinition.Umb().Configuration as BlockListConfiguration;
-                if(config != null)
+                if(dataTypeDefinition.Umb().Configuration is BlockListConfiguration config)
                 {
                     blocks = config.Blocks.ToList();
                 }
@@ -65,14 +56,16 @@ namespace YuzuDelivery.Umbraco.Import
             return dataTypeService.Save(dataTypeDefinition);
         }
 
-        private BlockListConfiguration CreateBlockListConfig(string[] subBlocks, List<BlockListConfiguration.BlockConfiguration> blocks, Options options)
+        private BlockListConfiguration CreateBlockListConfig(IEnumerable<string> subBlocks, List<BlockListConfiguration.BlockConfiguration> blocks, Options options)
         {
-            options = options == null ? options = new Options() : options; 
-            var blockListConfig = options.Config == null ? new BlockListConfiguration() : options.Config;
+            options = options ?? (new Options()); 
+            var blockListConfig = options.Config ?? new BlockListConfiguration();
 
-            blockListConfig.ValidationLimit = new BlockListConfiguration.NumberRange();
-            blockListConfig.ValidationLimit.Min = options.Min;
-            blockListConfig.ValidationLimit.Max = options.Max;
+            blockListConfig.ValidationLimit = new BlockListConfiguration.NumberRange
+            {
+                Min = options.Min,
+                Max = options.Max
+            };
 
             foreach (var subBlock in subBlocks)
             {
@@ -85,7 +78,7 @@ namespace YuzuDelivery.Umbraco.Import
             return blockListConfig;
         }
 
-        private bool DoesBlockAlreadyExist(string subBlock, List<BlockListConfiguration.BlockConfiguration> blocks, Options options)
+        private bool DoesBlockAlreadyExist(string subBlock, IEnumerable<BlockListConfiguration.BlockConfiguration> blocks, Options options)
         {
             var contentType = GetContentType(subBlock, options);
             return contentType != null && blocks.Any(x => x.ContentElementTypeKey == contentType.Umb().Key);
@@ -99,7 +92,7 @@ namespace YuzuDelivery.Umbraco.Import
             return new BlockListConfiguration.BlockConfiguration()
             {
                 Label = blockName.RemoveAllVmPrefixes().CamelToSentenceCase(),
-                View = options.CustomView == null ? DefaultCustomView : options.CustomView,
+                View = options.CustomView ?? DefaultCustomView,
                 EditorSize = "medium",
                 ContentElementTypeKey = contentType.Umb().Key,
                 SettingsElementTypeKey = settingsType?.Umb().Key,
@@ -114,7 +107,7 @@ namespace YuzuDelivery.Umbraco.Import
                 :
                 contentTypeForVmTypeService.CreateOrUpdate(blockName, null, true);
 
-            if (options.CreatePropertiesAction != null) options.CreatePropertiesAction(contentType, documentTypePropertyService);
+            options.CreatePropertiesAction?.Invoke(contentType, documentTypePropertyService);
 
             return contentType;
         }

@@ -22,12 +22,10 @@ namespace YuzuDelivery.Umbraco.Core
 
     public class DefaultPublishedElementCollectionConvertor : IYuzuTypeConvertor<IEnumerable<IPublishedElement>, IEnumerable<object>>
     {
-        private readonly IMapper mapper;
         private readonly IDefaultPublishedElement[] defaultItems;
 
-        public DefaultPublishedElementCollectionConvertor(IMapper mapper, IDefaultPublishedElement[] defaultItems)
+        public DefaultPublishedElementCollectionConvertor(IDefaultPublishedElement[] defaultItems)
         {
-            this.mapper = mapper;
             this.defaultItems = defaultItems;
         }
 
@@ -35,15 +33,10 @@ namespace YuzuDelivery.Umbraco.Core
         {
             var output = new List<object>();
 
-            if (elements.Any())
+            var element = elements.FirstOrDefault();
+            if (element != null)
             {
-                var element = elements.FirstOrDefault();
-
-                foreach (var i in defaultItems)
-                {
-                    if (i.IsValid(element))
-                        output.Add(i.Apply(element, context));
-                }
+                output.AddRange(from i in defaultItems where i.IsValid(element) select i.Apply(element, context));
             }
 
             return output;
@@ -52,30 +45,17 @@ namespace YuzuDelivery.Umbraco.Core
 
     public class DefaultPublishedElementCollectionToSingleConvertor : IYuzuTypeConvertor<IEnumerable<IPublishedElement>, object>
     {
-        private readonly IMapper mapper;
         private readonly IDefaultPublishedElement[] defaultItems;
 
-        public DefaultPublishedElementCollectionToSingleConvertor(IMapper mapper, IDefaultPublishedElement[] defaultItems)
+        public DefaultPublishedElementCollectionToSingleConvertor(IDefaultPublishedElement[] defaultItems)
         {
-            this.mapper = mapper;
             this.defaultItems = defaultItems;
         }
 
         public object Convert(IEnumerable<IPublishedElement> elements, UmbracoMappingContext context)
         {
-            if (elements.Any())
-            {
-                var element = elements.FirstOrDefault();
-
-                foreach (var i in defaultItems)
-                {
-                    if (i.IsValid(element))
-                        return i.Apply(element, context);
-                }
-                return null;
-            }
-            else
-                return null;
+            var element = elements.FirstOrDefault();
+            return element != null ? (from i in defaultItems where i.IsValid(element) select i.Apply(element, context)).FirstOrDefault() : null;
         }
     }
 

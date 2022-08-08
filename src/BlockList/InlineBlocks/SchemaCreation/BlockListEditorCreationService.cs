@@ -3,13 +3,12 @@ using YuzuDelivery.Core;
 
 #if NETCOREAPP
 using Umbraco.Extensions;
-using Umbraco.Cms.Core.Logging;
 using Umbraco.Cms.Core.PropertyEditors;
 #else
 using Umbraco.Core;
-using Umbraco.Core.Logging;
 using Umbraco.Web.PropertyEditors;
 #endif
+
 
 namespace YuzuDelivery.Umbraco.Import
 {
@@ -47,7 +46,7 @@ namespace YuzuDelivery.Umbraco.Import
                 buildOptions.Max = 1;
             }
 
-            var subBlocks = data.Config.AllowedTypes.Any() ? data.Config.AllowedTypes : new string[] { data.Config.TypeName };
+            var subBlocks = data.Config.AllowedTypes.Any() ? data.Config.AllowedTypes : new[] { data.Config.TypeName };
 
             return blockListDataTypeFactory.CreateOrUpdate(dataTypeName, subBlocks, buildOptions);
         }
@@ -55,7 +54,7 @@ namespace YuzuDelivery.Umbraco.Import
         public virtual string GetDataTypeName(VmToContentPropertyMap data)
         {
             var config = data.Config;
-            var dataTypeName = string.Empty;
+            string dataTypeName;
 
             if (!config.AllowedTypes.Any())
             {

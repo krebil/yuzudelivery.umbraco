@@ -1,5 +1,5 @@
-﻿using YuzuDelivery.Core;
-using YuzuDelivery.Umbraco.BlockList;
+﻿using YuzuDelivery.Umbraco.BlockList;
+
 
 namespace YuzuDelivery.Umbraco.Core
 {
@@ -10,23 +10,22 @@ namespace YuzuDelivery.Umbraco.Core
         {
             var rows = grid.Rows;
 
-            if (rows[rowIndex] != null)
+            if (rows[rowIndex] == null) 
+                return default(V);
+            
+            var row = rows[rowIndex];
+            if (row.Columns[columnIndex] == null) 
+                return default(V);
+            
+            var column = row.Columns[columnIndex];
+            if (column.Items[itemIndex] == null) 
+                return default(V);
+            
+            var item = column.Items[itemIndex];
+            if (item.Content is V content)
             {
-                var row = rows[rowIndex];
-                if (row.Columns[columnIndex] != null)
-                {
-                    var column = row.Columns[columnIndex];
-                    if (column.Items[itemIndex] != null)
-                    {
-                        var item = column.Items[itemIndex];
-                        if (item.Content is V)
-                        {
-                            var output = ((V)item.Content);
-                            grid.Rows.RemoveAt(rowIndex);
-                            return output;
-                        }
-                    }
-                }
+                grid.Rows.RemoveAt(rowIndex);
+                return content;
             }
             return default(V);
         }
@@ -35,22 +34,20 @@ namespace YuzuDelivery.Umbraco.Core
         {
             var rows = grid.Rows;
 
-            if (rows[rowIndex] != null)
+            if (rows[rowIndex] == null) 
+                return default(V);
+            
+            var row = rows[rowIndex];
+            if (row.Items[itemIndex] == null) 
+                return default(V);
+            
+            var item = row.Items[itemIndex];
+            if (item.Content is V content)
             {
-                var row = rows[rowIndex];
-                if (row.Items[itemIndex] != null)
-                {
-                    var item = row.Items[itemIndex];
-                    if (item.Content is V)
-                    {
-                        var output = ((V)item.Content);
-                        grid.Rows.RemoveAt(rowIndex);
-                        return output;
-                    }
-                }
+                grid.Rows.RemoveAt(rowIndex);
+                return content;
             }
             return default(V);
         }
-
     }
 }
